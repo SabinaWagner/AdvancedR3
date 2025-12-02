@@ -16,3 +16,5 @@ Suggests:
     gitcreds,
     styler,
     usethis
+URL: https://github.com/SabinaWagner/AdvancedR3
+BugReports: https://github.com/SabinaWagner/AdvancedR3/issues
