@@ -7,7 +7,15 @@ format: html
 ## Header 1
 
 ```{r setup}
-#| include: false
+library(targets)
+
+# Set the target storage folder to "_targets"
+tar_config_set(store = here::here("_targets"))
+
+source(here::here("R/functions.R"))
+
+lipidomics <- tar_read(lipidomics)
+
 ```
 
 ## section 16
@@ -55,5 +63,7 @@ targets::tar_visnetwork()
 # check for outdated objects
 targets::tar_outdated()
 
+# inspect targets object
+targets::tar_read(lipidomics)
 
 ```
