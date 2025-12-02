@@ -11,5 +11,26 @@ format: html
 ```
 
 ```{r}
-# Code chunk
+#| eval: false
+# This code was run in the console to add dependencies to the description file
+usethis::use_package("stringr")
+usethis::use_package("readxl")
+usethis::use_package("dplyr")
+usethis::use_package("tidyr")
+usethis::use_package("snakecase")
+usethis::use_package("here")
+usethis::use_package("fs")
+usethis::use_package("readr")
+usethis::use_usethis()
+
+# Then the .rprofile was edited using
+usethis::use_usethis()
+# and adding the following
+if (interactive()) {
+  suppressMessages(require(usethis))
+}
+
+# Then it was not necessary to call usethis:: so suggested packages were added like this:
+use_package("usethis", "suggests")
+use_package("styler", "suggests")
 ```
