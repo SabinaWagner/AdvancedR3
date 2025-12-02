@@ -41,6 +41,19 @@ use_package("styler", "suggests")
 
 ```{r}
 #| eval: false
-# create targets doc
+# create targets doc and edit the pipeline
 targets::use_targets()
+
+# run the target pipeline using 
+targets::tar_make()
+# or use the palette (ctrl + shift + p) and search for target run
+
+# view the visualization of the pipeline using 
+targets::tar_visnetwork()
+# or use the palette (ctrl + shift + p) and search for target visual
+
+# check for outdated objects
+targets::tar_outdated()
+
+
 ```
