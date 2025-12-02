@@ -10,6 +10,8 @@ format: html
 #| include: false
 ```
 
+## section 16
+
 ```{r}
 #| eval: false
 # This code was run in the console to add dependencies to the description file
@@ -33,4 +35,12 @@ if (interactive()) {
 # Then it was not necessary to call usethis:: so suggested packages were added like this:
 use_package("usethis", "suggests")
 use_package("styler", "suggests")
+```
+
+## Section 17
+
+```{r}
+#| eval: false
+# create targets doc
+targets::use_targets()
 ```
