@@ -44,7 +44,7 @@ create_plot_distributions <- function(data) {
 clean <- function(data) {
   data |>
     dplyr::group_by(dplyr::pick(-value)) |>
-    dplyr::summarise(value = mean(value), .groups="keep") |>
+    dplyr::summarise(value = mean(value), .groups = "keep") |>
     dplyr::ungroup()
 }
 
@@ -60,5 +60,26 @@ preprocess <- function(data) {
     dplyr::mutate(
       class = as.factor(class),
       value = scale(value)
+    )
+}
+
+#' fit a logistic regression model
+#'
+#' @param data dataframe with columns "value", "class", and "metabolite"
+#' @param model a formula for the logistic regression model
+#'
+#' @returns a tidy tibble with model results as odds ratio
+
+fit_model <- function(data, model) {
+  glm(
+    formula = model,
+    data = data,
+    family = binomial
+  ) |>
+    broom::tidy(exponentiate = TRUE) |>
+    dplyr::mutate(
+      metabolite = unique(data$metabolite),
+      model = format(model),
+      .before = tidyselect::everything()
     )
 }

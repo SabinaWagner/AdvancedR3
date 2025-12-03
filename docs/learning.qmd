@@ -186,3 +186,8 @@ glm(
     .before = everything()
   )
 ```
+
+```{r}
+fit_model(just_cholesterol, "class ~ value")  
+
+```
