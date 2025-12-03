@@ -81,3 +81,7 @@ lipidomics |>
 # Tip! use select to rename columns
 # Use glue package to paste values together
 ```
+
+```{r}
+create_table_descriptive_stats(lipidomics)
+```

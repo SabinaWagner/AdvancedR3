@@ -59,7 +59,7 @@ list(
     name = lipidomics,
     command = readr::read_csv(file, show_col_types = FALSE)
   ),
-  tar_quarto(
+  tar_quarto( # Render a Quarto document
     name = quarto_doc,
     path = "docs/learning.qmd"
   )
