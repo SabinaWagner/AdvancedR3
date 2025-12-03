@@ -188,6 +188,10 @@ glm(
 ```
 
 ```{r}
-fit_model(just_cholesterol, "class ~ value")  
+fit_model(just_cholesterol, class ~ value)  
 
+```
+
+```{r}
+create_model_results(lipidomics)
 ```

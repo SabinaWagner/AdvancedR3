@@ -83,3 +83,18 @@ fit_model <- function(data, model) {
       .before = tidyselect::everything()
     )
 }
+
+
+
+#' preprocess data and use it to fit model and get clean results
+#'
+#' @param data dataframe with columns "value", "class", and "metabolite"
+#'
+#' @returns a tidy tibble with model results as odds ratio
+
+create_model_results <- function(data){
+  data |>
+    dplyr::filter(metabolite == "Cholesterol") |>
+    preprocess() |>
+    fit_model(class ~ value)
+}
