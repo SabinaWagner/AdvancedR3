@@ -122,3 +122,40 @@ create_plot_distributions(lipidomics)
 #| fig-cap: "Distribution of metabolites in the lipidomics dataset."
 tar_read(plot_distributions)
 ```
+
+## Potenital research questions for lipidomics data
+
+-   How does age and sex affect cholesterol level?
+    -   cholesterol \<- age x sex + age + sex
+    -   linear regression model
+    -   change data to wide format
+        -   conflicts with duplicate values for some individuals
+-   How T1D affect cholesterol levels?
+    -   cholesterol \<- T1D
+    -   linear regression model
+    -   change data to wide format
+-   Which metabolites have the strongest correlation with T1D? T1D \<-
+    metabolite1 T1D \<- metabolite2 .... T1D \<- metaboliteN
+    -   logistic regression model
+    -   change data to wide format
+        -   conflicts with duplicate values for some individuals
+    -   standardise metabolite values
+
+## section 20
+
+```{r}
+lipidomics |> 
+  count(code, metabolite) |>
+  filter(n >1)
+```
+
+```{r}
+lipidomics |> 
+  group_by(pick(-value)) |> 
+  summarise(value = mean(value), .groups="keep") |> 
+  ungroup()
+```
+
+```{r}
+clean(lipidomics)
+```
