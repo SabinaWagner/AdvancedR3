@@ -15,3 +15,16 @@ create_table_descriptive_stats <- function(data) {
 }
 
 
+#' create a plot of histograms for all metabolites
+#'
+#' @param data a dataset containing the columns 'metabolite' and 'value'
+#'
+#' @returns a ggplot2 object with histograms for each metabolite
+#'
+create_plot_distributions <- function(data) {
+  data |>
+    ggplot2::ggplot(ggplot2::aes(x = value)) +
+    ggplot2::geom_histogram() +
+    ggplot2::facet_wrap(ggplot2::vars(metabolite), scales = "free") +
+    ggplot2::theme_minimal()
+}

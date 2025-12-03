@@ -70,6 +70,7 @@ targets::tar_read(lipidomics)
 ## Making a table (section 18)
 
 ```{r}
+#| eval: false
 lipidomics |>
   group_by(metabolite) |>
   summarise(across(value, list(mean = mean, sd = sd))) |>
@@ -83,6 +84,7 @@ lipidomics |>
 ```
 
 ```{r}
+#| eval: false
 create_table_descriptive_stats(lipidomics)
 ```
 
@@ -99,6 +101,7 @@ but this can be set in the \_targets file under tar_option_set(packages
 ## Distribution plot
 
 ```{r}
+#| eval: false
 ggplot(
   lipidomics,
   aes(x = value)
@@ -106,4 +109,9 @@ ggplot(
   geom_histogram() +
   facet_wrap(vars(metabolite), scales = "free") + # use vars() instead of ~
   theme_minimal()
+```
+
+```{r}
+#| eval: false
+create_plot_distributions(lipidomics)
 ```
