@@ -4,10 +4,11 @@ author: "Your Name"
 format: html
 ---
 
-## Header 1
+## Setup
 
 ```{r setup}
 library(targets)
+library(tidyverse)
 
 # Set the target storage folder to "_targets"
 tar_config_set(store = here::here("_targets"))
@@ -15,7 +16,6 @@ tar_config_set(store = here::here("_targets"))
 source(here::here("R/functions.R"))
 
 lipidomics <- tar_read(lipidomics)
-
 ```
 
 ## section 16
@@ -52,11 +52,11 @@ use_package("styler", "suggests")
 # create targets doc and edit the pipeline
 targets::use_targets()
 
-# run the target pipeline using 
+# run the target pipeline using
 targets::tar_make()
 # or use the palette (ctrl + shift + p) and search for target run
 
-# view the visualization of the pipeline using 
+# view the visualization of the pipeline using
 targets::tar_visnetwork()
 # or use the palette (ctrl + shift + p) and search for target visual
 
@@ -65,5 +65,19 @@ targets::tar_outdated()
 
 # inspect targets object
 targets::tar_read(lipidomics)
+```
 
+## Making a table (section 18)
+
+```{r}
+lipidomics |>
+  group_by(metabolite) |>
+  summarise(across(value, list(mean = mean, sd = sd))) |>
+  mutate(across(where(is.numeric), \(x) format(x, digits = 2))) |>
+  mutate(MeanSD = glue::glue("{value_mean} ± ({value_sd})")) |>
+  select(Metabolite = metabolite, "Mean ± (SD)" = MeanSD)
+
+# lamda function \(x) alternative to function(x) and ~ with .x
+# Tip! use select to rename columns
+# Use glue package to paste values together
 ```
