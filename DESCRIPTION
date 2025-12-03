@@ -15,7 +15,8 @@ Imports:
     stringr,
     tarchetypes,
     targets,
-    tidyr
+    tidyr,
+    tidyselect
 Suggests: 
     gitcreds,
     styler,
