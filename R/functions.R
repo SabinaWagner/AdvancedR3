@@ -47,3 +47,18 @@ clean <- function(data) {
     dplyr::summarise(value = mean(value), .groups="keep") |>
     dplyr::ungroup()
 }
+
+
+#' Preprocess data by scaling values and converting class to factor
+#'
+#' @param data a dataframe with columns "class" and "value"
+#'
+#' @returns a dataframe with scaled "value" and "class" as factor
+#'
+preprocess <- function(data) {
+  data |>
+    dplyr::mutate(
+      class = as.factor(class),
+      value = scale(value)
+    )
+}
