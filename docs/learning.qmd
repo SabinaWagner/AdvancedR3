@@ -119,5 +119,6 @@ create_plot_distributions(lipidomics)
 ## Results: Distribution plot
 
 ```{r}
+#| fig-cap: "Distribution of metabolites in the lipidomics dataset."
 tar_read(plot_distributions)
 ```
