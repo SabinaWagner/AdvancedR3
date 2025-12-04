@@ -113,3 +113,24 @@ fit_all_models <- function(data) {
     purrr::map(\(model_name) fit_model(data, model = model_name)) |>
     purrr::list_rbind()
 }
+
+#' Make a point and whiskers plot of model results
+#'
+#' @param results a dataframe with model results including 'term', 'estimate', 'std.error', 'metabolite', and 'model' columns
+#'
+#' @returns a ggplot2 object visualizing the model estimates for each metabolite with error bars
+#'
+create_plot_model_results <- function(results) {
+  results |>
+    dplyr::filter(term == "value", std.error <= 2, estimate <= 5) |>
+    dplyr::select(metabolite, model, estimate, std.error) |>
+    ggplot2::ggplot(ggplot2::aes(
+      x = estimate,
+      y = metabolite,
+      xmin = estimate - std.error,
+      xmax = estimate + std.error
+    )) +
+    ggplot2::geom_pointrange() +
+    ggplot2::geom_vline(xintercept = 1, linetype = "dashed") +
+    ggplot2::facet_grid(cols = ggplot2::vars(model))
+}

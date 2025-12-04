@@ -36,22 +36,7 @@ tar_read(plot_distributions)
 ### Figure of model estimates
 
 ```{r}
-model_results <- tar_read(model_results)
-```
-
-```{r}
-model_results |>
-  filter(term == "value", std.error <= 2, estimate <= 5) |>
-  select(metabolite, model, estimate, std.error) |>
-  ggplot(aes(
-    x = estimate,
-    y = metabolite,
-    xmin = estimate - std.error,
-    xmax = estimate + std.error
-  )) +
-  geom_pointrange() +
-  geom_vline(xintercept = 1, linetype = "dashed") +
-  facet_grid(cols = vars(model))
+tar_read(plot_model_results)
 ```
 
 ## Appendix
