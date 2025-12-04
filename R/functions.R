@@ -92,9 +92,23 @@ fit_model <- function(data, model) {
 #'
 #' @returns a tidy tibble with model results as odds ratio
 
-create_model_results <- function(data){
+create_model_results <- function(data) {
   data |>
     dplyr::filter(metabolite == "Cholesterol") |>
     preprocess() |>
     fit_model(class ~ value)
+}
+
+#' fit several models for one dataset
+#'
+#' @param data a dataframe with one metabolite's data
+#'
+#' @returns a tibble with model results for all specified models
+fit_all_models <- function(data) {
+  list(
+    class ~ value,
+    class ~ value + gender + age
+  ) |>
+    purrr::map(\(model_name) fit_model(data, model = model_name)) |>
+    purrr::list_rbind()
 }
