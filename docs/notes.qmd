@@ -1,0 +1,194 @@
+---
+title: "notes"
+format: html
+---
+
+## section 16
+
+```{r}
+#| eval: false
+# This code was run in the console to add dependencies to the description file
+usethis::use_package("stringr")
+usethis::use_package("readxl")
+usethis::use_package("dplyr")
+usethis::use_package("tidyr")
+usethis::use_package("snakecase")
+usethis::use_package("here")
+usethis::use_package("fs")
+usethis::use_package("readr")
+usethis::use_usethis()
+
+# Then the .rprofile was edited using
+usethis::use_usethis()
+# and adding the following
+if (interactive()) {
+  suppressMessages(require(usethis))
+}
+
+# Then it was not necessary to call usethis:: so suggested packages were added like this:
+use_package("usethis", "suggests")
+use_package("styler", "suggests")
+```
+
+## Section 17
+
+```{r}
+#| eval: false
+# create targets doc and edit the pipeline
+targets::use_targets()
+
+# run the target pipeline using
+targets::tar_make()
+# or use the palette (ctrl + shift + p) and search for target run
+
+# view the visualization of the pipeline using
+targets::tar_visnetwork()
+# or use the palette (ctrl + shift + p) and search for target visual
+
+# check for outdated objects
+targets::tar_outdated()
+
+# inspect targets object
+targets::tar_read(lipidomics)
+```
+
+## Making a table (section 18)
+
+```{r}
+#| eval: false
+lipidomics |>
+  group_by(metabolite) |>
+  summarise(across(value, list(mean = mean, sd = sd))) |>
+  mutate(across(where(is.numeric), \(x) format(x, digits = 2))) |>
+  mutate(MeanSD = glue::glue("{value_mean} ± ({value_sd})")) |>
+  select(Metabolite = metabolite, "Mean ± (SD)" = MeanSD)
+
+# lamda function \(x) alternative to function(x) and ~ with .x
+# Tip! use select to rename columns
+# Use glue package to paste values together
+```
+
+```{r}
+#| eval: false
+create_table_descriptive_stats(lipidomics)
+```
+
+```{r}
+tar_read(table_descriptive_stats) |> knitr::kable(caption = "The mean and standard deviation of metabolites in the lipidomics dataset.")
+```
+
+Note: Some people were having problems with the %\>% pipe and tagets -
+but this can be set in the \_targets file under tar_option_set(packages
+= c("magrittr")
+
+### Distribution plot
+
+```{r}
+#| eval: false
+ggplot(
+  lipidomics,
+  aes(x = value)
+) +
+  geom_histogram() +
+  facet_wrap(vars(metabolite), scales = "free") + # use vars() instead of ~
+  theme_minimal()
+```
+
+```{r}
+#| eval: false
+create_plot_distributions(lipidomics)
+```
+
+## Potenital research questions for lipidomics data
+
+-   How does age and sex affect cholesterol level?
+    -   cholesterol \<- age x sex + age + sex
+    -   linear regression model
+    -   change data to wide format
+        -   conflicts with duplicate values for some individuals
+-   How T1D affect cholesterol levels?
+    -   cholesterol \<- T1D
+    -   linear regression model
+    -   change data to wide format
+-   Which metabolites have the strongest correlation with T1D? T1D \<-
+    metabolite1 T1D \<- metabolite2 .... T1D \<- metaboliteN
+    -   logistic regression model
+    -   change data to wide format
+        -   conflicts with duplicate values for some individuals
+    -   standardise metabolite values
+
+## section 20
+
+```{r}
+lipidomics |>
+  count(code, metabolite) |>
+  filter(n > 1)
+```
+
+```{r}
+lipidomics |>
+  group_by(pick(-value)) |>
+  summarise(value = mean(value), .groups = "keep") |>
+  ungroup()
+```
+
+```{r}
+clean(lipidomics)
+```
+
+```{r}
+lipidomics |>
+  filter(metabolite == "Cholesterol") |>
+  mutate(
+    class = as.factor(class),
+    value = scale(value)
+  )
+```
+
+```{r}
+#| eval: false
+just_cholesterol <- lipidomics |>
+  filter(metabolite == "Cholesterol") |>
+  preprocess()
+
+glm(
+  formula = class ~ value,
+  data = just_cholesterol,
+  family = binomial
+) |>
+  broom::tidy(exponentiate = TRUE) |>
+  mutate(
+    metabolite = unique(just_cholesterol$metabolite),
+    model = format(class ~ value),
+    .before = everything()
+  )
+```
+
+```{r}
+#| eval: false
+fit_model(just_cholesterol, class ~ value)
+```
+
+```{r}
+create_model_results(lipidomics)
+```
+
+## Combining multiple models
+
+```{r}
+#| eval: false
+list(
+  class ~ value,
+  class ~ value + gender + age
+) |>
+  purrr::map(\(model_name) fit_model(data, model = model_name)) |> # the lambda function/anonymous function lets us run map over the model (second argument to our function) rather than the data (first argument)
+  purrr::list_rbind()
+```
+
+```{r}
+lipidomics |>
+  group_split(metabolite) |>
+  map(preprocess) |> # remember not to use ()after function when calling it inside purrr::map
+  map(fit_all_models) |>
+  purrr::list_rbind()
+```
