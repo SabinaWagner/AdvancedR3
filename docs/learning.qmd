@@ -201,20 +201,25 @@ create_model_results(lipidomics)
 
 ```{r}
 #| eval: false
-  list(
-    class ~ value,
-    class ~ value + gender + age
-  ) |>
-    purrr::map(\(model_name) fit_model(data, model = model_name)) |> # the lambda function/anonymous function lets us run map over the model (second argument to our function) rather than the data (first argument)
-    purrr::list_rbind()
-
+list(
+  class ~ value,
+  class ~ value + gender + age
+) |>
+  purrr::map(\(model_name) fit_model(data, model = model_name)) |> # the lambda function/anonymous function lets us run map over the model (second argument to our function) rather than the data (first argument)
+  purrr::list_rbind()
 ```
 
 ```{r}
-lipidomics |> 
-group_split(metabolite) |> map(preprocess) |>  #remember not to use ()after function when calling it inside purrr::map
-  map(fit_all_models) |> 
+lipidomics |>
+  group_split(metabolite) |>
+  map(preprocess) |> # remember not to use ()after function when calling it inside purrr::map
+  map(fit_all_models) |>
   purrr::list_rbind()
+```
 
+## Appendix
 
+```{r}
+tar_read(model_results) |>
+  knitr::kable(caption = "Logistic regression model results for all metabolites in the lipidomics dataset.")
 ```

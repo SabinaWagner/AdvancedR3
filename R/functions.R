@@ -86,17 +86,18 @@ fit_model <- function(data, model) {
 
 
 
-#' preprocess data and use it to fit model and get clean results
+#' split by metabolite, preprocess data and use it to fit models and get clean results for all metabolites
 #'
 #' @param data dataframe with columns "value", "class", and "metabolite"
 #'
-#' @returns a tidy tibble with model results as odds ratio
+#' @returns a tidy tibble with model results  for all specified models for all metabolites as odds ratio
 
 create_model_results <- function(data) {
   data |>
-    dplyr::filter(metabolite == "Cholesterol") |>
-    preprocess() |>
-    fit_model(class ~ value)
+    dplyr::group_split(metabolite) |>
+    purrr::map(preprocess) |>
+    purrr::map(fit_all_models) |>
+    purrr::list_rbind()
 }
 
 #' fit several models for one dataset
